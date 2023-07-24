@@ -51,16 +51,110 @@ server.listen(port, () => {
 
 // Endpoints
 
+//Obtener todas las recetas (GET /recetas)
 
+server.get('/recetas', async (req, res) => {
+  const selectAll = 'select * from recetas_db.recetas';
+  const connection = await getConnection();
+  const [result] = await connection.query(selectAll);
 
+  connection.end();
+  res.json({
+    info: {
+      count: result.length,
+    },
+    results: result,
+  });
+});
 
+//Obtener una receta por su ID (GET /recetas/:id)
+server.get('/recetas/:id', async (req, res) => {
+  const id = req.params.id;
+  const select = 'select * from recetas_db.recetas where id = ?';
+  const connection = await getConnection();
+  const [result] = await connection.query(select, id);
+  //console.log(result)
+  connection.end();
+  res.json({
+    results: result,
+  });
+});
 
+//Crear una nueva receta (POST /recetas)
 
+server.post('/recetas', async (req,res)=>{
+ try{
+  const infoReceta = req.body
+  const insert =
+    'insert into recetas_db.recetas (nombre,ingredientes,instrucciones) values (?,?,?)';
+  const connection = await getConnection();
+  const [result] = await connection.query(insert, [
+    infoReceta.nombre,
+    infoReceta.ingredientes,
+    infoReceta.instrucciones,
+  ]);
+  
+  connection.end()
+  res.json({
+    success: true,
+    id: result.insertId
+  });
+  } catch (error) {
+    res.json({
+      success: false,
+      message: 'Ha ocurrido un error revise los campos',
+    });
+  }
 
+})
 
+//Actualizar una receta existente (PUT /recetas/:id)
+server.put('/recetas/:id', async (req, res) => {
+  const id = req.params.id;
+  const { nombre, ingredientes, instrucciones} = req.body;
 
+  try {
+    const update =
+      'UPDATE recetas_db.recetas SET nombre = ?, ingredientes = ? , instrucciones = ? WHERE id = ?';
+    const connection = await getConnection();
+    const [result] = await connection.query(update, [
+      nombre,
+      ingredientes,
+      instrucciones,
+      id
+    ]);
+    connection.end();
+    res.json({
+      success: true,
+    });
+  } catch (error) {
+    res.json({
+      success: false,
+      message: 'Ha ocurrido un error revise los campos',
+    });
+  }
+});
 
+//Eliminar una receta (DELETE /recetas/:id)
 
+server.delete('/recetas/:id', async (req, res) => {
+  const id = req.params.id;
+
+  try {
+    const deleteSql = 'Delete from recetas_db.recetas where id = ? ';
+    const conn = await getConnection();
+    const [result] = await conn.query(deleteSql, [id]);
+    conn.end();
+    res.json({
+      success: true,
+    });
+  } catch (error) {
+    res.json({
+      success: false,
+      message: 'Ha ocurrido un error revise los campos',
+    });
+  }
+});
 
 
 
