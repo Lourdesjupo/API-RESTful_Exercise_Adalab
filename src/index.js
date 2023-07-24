@@ -74,9 +74,9 @@ server.get('/recetas/:id', async (req, res) => {
   const connection = await getConnection();
   const [result] = await connection.query(select, id);
   connection.end();
-  res.json({
-    results: result,
-  });
+  res.json(
+    result[0]
+  );
 });
 
 //Crear una nueva receta (POST /recetas)
@@ -141,9 +141,9 @@ server.delete('/recetas/:id', async (req, res) => {
 
   try {
     const deleteSql = 'Delete from recetas_db.recetas where id = ? ';
-    const conn = await getConnection();
-    const [result] = await conn.query(deleteSql, [id]);
-    conn.end();
+    const connection = await getConnection();
+    const [result] = await connection.query(deleteSql, [id]);
+    connection.end();
     res.json({
       success: true,
     });
