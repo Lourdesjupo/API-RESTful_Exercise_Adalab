@@ -73,7 +73,6 @@ server.get('/recetas/:id', async (req, res) => {
   const select = 'select * from recetas_db.recetas where id = ?';
   const connection = await getConnection();
   const [result] = await connection.query(select, id);
-  //console.log(result)
   connection.end();
   res.json({
     results: result,
@@ -156,47 +155,3 @@ server.delete('/recetas/:id', async (req, res) => {
   }
 });
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// server.get("/api/items", async (req, res) => {
-
-//   const selectProducts = "SELECT * FROM products";
-
-//   const conn = await getConnection();
-
-//   const [results] = await conn.query(selectProducts);
-
-//   console.log(results);
-
-//   conn.end();
-
-//   res.json(results);
-// });
-
-
-
-// // GET /details
-
-// server.get("/details", async (req, res) => {
-
-//   res.render('details', {})
-// });
-
-
-// // Serv estáticos
-
-// server.use(express.static("./src/public_html"));
